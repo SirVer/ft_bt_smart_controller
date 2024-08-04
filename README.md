@@ -12,12 +12,13 @@ allows for programming in any language, Python included.
 ## Quickstart
 
 1. Install mosquitto and run it on localhost.
-2. Build and run `ftbtc`. I might make releases at some point, for now you have
-   to build it yourself.
-   1. Install Rust as described at https://rustup.rs/
-   2. cargo run --release 
+2. Run `ftbtc`.
+   1. You can download this from the [release page](https://github.com/SirVer/ft_bt_smart_controller/releases), or
+   1. build it yourself:
+      1. Install Rust as described at https://rustup.rs/
+      2. cargo run --release
 3. Click the pairing button on the BT Controller.
-4. Run the example [Python program](py/main.py). 
+4. Run the example [Python program](py/main.py).
 
 
 # Acknowledgments
@@ -31,4 +32,3 @@ useful was especially the work from Till harbaum (@harbaum) and I learned a lot 
 
 - https://github.com/harbaum/WebBTSmart/blob/master/control.html
 - https://github.com/harbaum/RPI-BLE-toy-control
-
