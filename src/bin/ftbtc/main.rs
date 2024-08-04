@@ -1,6 +1,3 @@
-// NOCOM(#sirver): what
-#![allow(unused_imports)]
-
 use anyhow::{bail, Result};
 use argh::FromArgs;
 use btleplug::api::{Peripheral, WriteType};
@@ -24,14 +21,18 @@ struct Args {
 #[tokio::main]
 async fn main() -> Result<()> {
     let args: Args = argh::from_env();
-    let mut mqttoptions = MqttOptions::new("ftbtc", &args.host, args.port);
+    let mut mqttoptions = MqttOptions::new("bt_smart_controller", &args.host, args.port);
     mqttoptions.set_keep_alive(Duration::from_secs(5));
 
     let (client, mut eventloop) = AsyncClient::new(mqttoptions, 10);
-    client.subscribe("ftbtc/m1", QoS::AtMostOnce).await?;
-    client.subscribe("ftbtc/m2", QoS::AtMostOnce).await?;
+    client
+        .subscribe("bt_smart_controller/m1", QoS::AtMostOnce)
+        .await?;
+    client
+        .subscribe("bt_smart_controller/m2", QoS::AtMostOnce)
+        .await?;
 
-    let device = ft_ble::open_device().await?;
+    let device = ft_bt_smart_controller::open_device().await?;
 
     let mut notification_stream = device.peripheral.notifications().await?;
     loop {
@@ -39,17 +40,17 @@ async fn main() -> Result<()> {
             val = notification_stream.next() => {
                 let Some(val) = val else { continue; };
                 let (topic, value) = match &val.uuid.to_string() as &str {
-                    ft_ble::UUID_CHAR_BATTERY => ("battery", val.value[0] as u16),
-                    ft_ble::UUID_CHAR_I1 => ("i1", u16::from_le_bytes(val.value.try_into().unwrap())),
-                    ft_ble::UUID_CHAR_I2 => ("i2", u16::from_le_bytes(val.value.try_into().unwrap())),
-                    ft_ble::UUID_CHAR_I3 => ("i3", u16::from_le_bytes(val.value.try_into().unwrap())),
-                    ft_ble::UUID_CHAR_I4 => ("i4", u16::from_le_bytes(val.value.try_into().unwrap())),
+                    ft_bt_smart_controller::UUID_CHAR_BATTERY => ("battery", val.value[0] as u16),
+                    ft_bt_smart_controller::UUID_CHAR_I1 => ("i1", u16::from_le_bytes(val.value.try_into().unwrap())),
+                    ft_bt_smart_controller::UUID_CHAR_I2 => ("i2", u16::from_le_bytes(val.value.try_into().unwrap())),
+                    ft_bt_smart_controller::UUID_CHAR_I3 => ("i3", u16::from_le_bytes(val.value.try_into().unwrap())),
+                    ft_bt_smart_controller::UUID_CHAR_I4 => ("i4", u16::from_le_bytes(val.value.try_into().unwrap())),
                     _ => {
                         println!("Unknown channel: {val:?}");
                         continue;
                     }
                 };
-                client.publish(&format!("ftbtc/{topic}"), QoS::AtLeastOnce, false, format!("{value}").as_bytes()).await?;
+                client.publish(&format!("bt_smart_controller/{topic}"), QoS::AtLeastOnce, false, format!("{value}").as_bytes()).await?;
             }
             e = eventloop.poll() => {
                 let Event::Incoming(Packet::Publish(p)) = e? else {
@@ -58,8 +59,8 @@ async fn main() -> Result<()> {
                 // Signed byte, ccw is negative, cw is positive.
                 let v: i8 = serde_json::from_slice(&p.payload)?;
                 let c = match &p.topic as &str {
-                    "ftbtc/m1" => &device.char_m1,
-                    "ftbtc/m2" => &device.char_m2,
+                    "bt_smart_controller/m1" => &device.char_m1,
+                    "bt_smart_controller/m2" => &device.char_m2,
                     _ => unreachable!("Not subscribed to anything else."),
                 };
                 device.peripheral.write(c, &[v as u8], WriteType::WithResponse).await?;

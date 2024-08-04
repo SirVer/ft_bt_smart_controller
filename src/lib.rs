@@ -1,6 +1,3 @@
-// NOCOM(#sirver): what
-#![allow(unused_imports, dead_code)]
-
 use anyhow::{bail, Result};
 use btleplug::api::Peripheral;
 use btleplug::api::{Central, CharPropFlags, Characteristic, Manager as _, ScanFilter, WriteType};
@@ -28,21 +25,17 @@ pub const UUID_CHAR_UNKNOWN5: &str = "8ae88224-ad7d-11e6-80f5-76304dec7eb7";
 pub const UUID_CHAR_M1: &str = "8ae8860c-ad7d-11e6-80f5-76304dec7eb7";
 /// "Handle 0x0026", This is M2, sends 0x81 when LED on
 pub const UUID_CHAR_M2: &str = "8ae88b84-ad7d-11e6-80f5-76304dec7eb7";
-/// "Handle 0x0029", sends [11] when read
-pub const UUID_CHAR_UNKNOWN6: &str = "8ae88efe-ad7d-11e6-80f5-76304dec7eb7";
-/// "Handle 002b", sends [11] when read
-pub const UUID_CHAR_UNKNOWN7: &str = "8ae89084-ad7d-11e6-80f5-76304dec7eb7";
-/// "Handle 002D", sends [11] when read.
-pub const UUID_CHAR_UNKNOWN8: &str = "8ae89200-ad7d-11e6-80f5-76304dec7eb7";
-/// "Handle 0x002F", sends [11] when read
-pub const UUID_CHAR_UNKNOWN9: &str = "8ae89386-ad7d-11e6-80f5-76304dec7eb7";
-/// Channel I1, always 2 bytes when read. 0xffff means Open
+/// These are for the input modes. If set to 0xb, this input returns OHM readings, if set to 0xa
+/// it returns voltage readings.
+pub const UUID_CHAR_MODE_I1: &str = "8ae88efe-ad7d-11e6-80f5-76304dec7eb7";
+pub const UUID_CHAR_MODE_I2: &str = "8ae89084-ad7d-11e6-80f5-76304dec7eb7";
+pub const UUID_CHAR_MODE_I3: &str = "8ae89200-ad7d-11e6-80f5-76304dec7eb7";
+pub const UUID_CHAR_MODE_I4: &str = "8ae89386-ad7d-11e6-80f5-76304dec7eb7";
+
+/// Input channels, always 2 bytes when read. 0xffff means open when in Ohm mode.
 pub const UUID_CHAR_I1: &str = "8ae89a2a-ad7d-11e6-80f5-76304dec7eb7";
-/// Channel I2
 pub const UUID_CHAR_I2: &str = "8ae89bec-ad7d-11e6-80f5-76304dec7eb7";
-/// Channel I3
 pub const UUID_CHAR_I3: &str = "8ae89dc2-ad7d-11e6-80f5-76304dec7eb7";
-/// Channel I4
 pub const UUID_CHAR_I4: &str = "8ae89f66-ad7d-11e6-80f5-76304dec7eb7";
 
 #[derive(Debug)]

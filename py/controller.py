@@ -17,10 +17,10 @@ class BtSmartController:
         self.client.connect(broker, port, 60)
 
         # Subscribe to the topic
-        self.client.subscribe("ftbtc/i1")
-        self.client.subscribe("ftbtc/i2")
-        self.client.subscribe("ftbtc/i3")
-        self.client.subscribe("ftbtc/i4")
+        self.client.subscribe("bt_smart_controller/i1")
+        self.client.subscribe("bt_smart_controller/i2")
+        self.client.subscribe("bt_smart_controller/i3")
+        self.client.subscribe("bt_smart_controller/i4")
 
         # Start a background thread to handle the network loop
         self.thread = threading.Thread(target=self.client.loop_forever)
@@ -43,21 +43,21 @@ class BtSmartController:
         return self.l4
 
     def write_m1(self, val):
-        self.client.publish("ftbtc/m1", str(val).encode("utf-8"))
+        self.client.publish("bt_smart_controller/m1", str(val).encode("utf-8"))
 
     def write_m2(self, val):
-        self.client.publish("ftbtc/m2", str(val).encode("utf-8"))
+        self.client.publish("bt_smart_controller/m2", str(val).encode("utf-8"))
 
     def on_message(self, client, userdata, message):
         msg_payload = message.payload.decode('utf-8')
         match message.topic:
-            case "ftbtc/i1":
+            case "bt_smart_controller/i1":
                 self.l1 = int(msg_payload)
-            case "ftbtc/i2":
+            case "bt_smart_controller/i2":
                 self.l2 = int(msg_payload)
-            case "ftbtc/i3":
+            case "bt_smart_controller/i3":
                 self.l3 = int(msg_payload)
-            case "ftbtc/i4":
+            case "bt_smart_controller/i4":
                 self.l4 = int(msg_payload)
 
 
