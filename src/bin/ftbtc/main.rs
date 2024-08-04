@@ -1,10 +1,9 @@
-use anyhow::{bail, Result};
+use anyhow::Result;
 use argh::FromArgs;
 use btleplug::api::{Peripheral, WriteType};
 use futures::prelude::*;
 use rumqttc::{AsyncClient, Event, MqttOptions, Packet, QoS};
 use std::time::Duration;
-use tokio::{task, time};
 
 #[derive(FromArgs)]
 /// Communicates to the BT Smart Controller via Bluetooth and proxies reads and writes to MQTT.

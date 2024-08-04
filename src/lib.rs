@@ -1,8 +1,7 @@
 use anyhow::{bail, Result};
 use btleplug::api::Peripheral;
-use btleplug::api::{Central, CharPropFlags, Characteristic, Manager as _, ScanFilter, WriteType};
+use btleplug::api::{Central, CharPropFlags, Characteristic, Manager as _, ScanFilter};
 use btleplug::platform::Manager;
-use std::error::Error;
 use tokio::time::{sleep, Duration};
 
 /// Seems to always send a single byte, maybe battery indicator in %
@@ -41,13 +40,13 @@ pub const UUID_CHAR_I4: &str = "8ae89f66-ad7d-11e6-80f5-76304dec7eb7";
 #[derive(Debug)]
 pub struct Device {
     pub peripheral: btleplug::platform::Peripheral,
-    char_battery: Characteristic,
+    pub char_battery: Characteristic,
     pub char_m1: Characteristic,
     pub char_m2: Characteristic,
-    char_i1: Characteristic,
-    char_i2: Characteristic,
-    char_i3: Characteristic,
-    char_i4: Characteristic,
+    pub char_i1: Characteristic,
+    pub char_i2: Characteristic,
+    pub char_i3: Characteristic,
+    pub char_i4: Characteristic,
 }
 
 pub async fn open_device() -> Result<Device> {
