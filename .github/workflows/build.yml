@@ -27,10 +27,12 @@ jobs:
     - name: Archive the build
       run: |
          mkdir -p dist/${{ matrix.os }}
-         tar -czvf dist/${{ matrix.os }}/build.tar.gz -C target/release .   
+         tar -czvf dist/${{ matrix.os }}/build.tar.gz -C $CARGO_TARGET_DIR/release .   
     - name: Upload the build
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.os }}-build
         path: dist/${{ matrix.os }}/build.tar.gz
 
+
+          
