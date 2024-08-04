@@ -22,15 +22,5 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build
       run: cargo build --release --verbose
-    - name: Archive the build
-      run: |
-         mkdir -p dist/${{ matrix.os }}
-         tar -czvf dist/${{ matrix.os }}/build.tar.gz -C Users/runner/work/ft_bt_smart_controller/ft_bt_smart_controller/target/release .   
-    - name: Upload the build
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ matrix.os }}-build
-        path: dist/${{ matrix.os }}/build.tar.gz
-
-
-          
+    - name: Run tests
+      run: cargo test --verbose
