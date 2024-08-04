@@ -25,12 +25,12 @@ jobs:
     - name: Run tests
       run: cargo test --verbose
     - name: Archive the build
-       run: |
+      run: |
          mkdir -p dist/${{ matrix.os }}
-         tar -czvf dist/${{ matrix.os }}/build.tar.gz -C target/release .
-         
+         tar -czvf dist/${{ matrix.os }}/build.tar.gz -C target/release .   
     - name: Upload the build
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.os }}-build
         path: dist/${{ matrix.os }}/build.tar.gz
+
