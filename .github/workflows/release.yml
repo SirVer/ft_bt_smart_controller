@@ -1,27 +1,41 @@
+name: Release
+
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - 'v*.*.*'  # Triggers the workflow on version tags
 
 jobs:
   release:
-    name: release ${{ matrix.target }}
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - target: x86_64-pc-windows-gnu
-            archive: zip
-          - target: x86_64-unknown-linux-musl
-            archive: tar.gz tar.xz tar.zst
-          - target: x86_64-apple-darwin
-            archive: zip
     steps:
-      - uses: actions/checkout@master
-      - name: Compile and release
-        uses: rust-build/rust-build.action@v1.4.5
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download Linux build
+        uses: actions/download-artifact@v2
+        with:
+          name: ubuntu-latest-build
+          path: ./dist/linux
+
+      - name: Download macOS build
+        uses: actions/download-artifact@v2
+        with:
+          name: macos-latest-build
+          path: ./dist/macos
+
+      - name: Download Windows build
+        uses: actions/download-artifact@v2
+        with:
+          name: windows-latest-build
+          path: ./dist/windows
+
+      - name: Create a release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/linux/build.tar.gz
+            dist/macos/build.tar.gz
+            dist/windows/build.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          RUSTTARGET: ${{ matrix.target }}
-          ARCHIVE_TYPES: ${{ matrix.archive }}
